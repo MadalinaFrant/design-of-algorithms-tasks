@@ -1,0 +1,142 @@
+Tema 1 Proiectarea Algoritmilor - Frant Madalina 324CB
+
+
+Pentru fiecare problema se citeste inputul din fisierul corespunzator 
+folosind un BufferedReader, respectiv se afiseaza solutia generata utilizand
+un BufferedWriter.
+
+
+Problema 1 - Walsh:
+
+In cadrul metodei main se citesc n si k de pe prima linie, apoi pentru 
+fiecare dintre coordonatele (x, y) date se genereaza solutia (apeland metoda
+walsh), afisand apoi valoarea aflata la aceste coordonate.
+
+Problema data este asemanatoare parcurgerii Z prezentate in cadrul laboratorului
+Divide et Impera. Astfel, solutia acesteia a fost adaptata problemei date.
+
+Metoda neg intoarce negatul unui numar (pentru 1 intoarce 0, respectiv 
+pentru 0 intoarce 1). 
+
+Metoda in_rectangle verifica daca (x, y) se incadreaza in dreptunghiul
+dat de coordonatele primite ca parametru. 
+
+Metoda search_val cauta recursiv ce valoare se afla la coordonatele (x, y)
+date, impartind matricea (problema) in 4 submatrici (subprobleme). Aceasta 
+verifica, generand coordonatele colturilor submatricilor, in care dintre 
+acestea se incadreaza, utilizand metoda in_rectangle, apeland apoi metoda 
+search_val pe matricea corespunzatoare. In cazul in care (x, y) se afla 
+in submatricea din dreapta jos, metoda search_val va fi apelata cu 
+parametrul val negat (din regula generare tabela Walsh). Cautarea se 
+opreste in momentul in care dimensiunea matricii devine 1 (s-a localizat
+solutia). 
+
+Metoda walsh primeste dimensiunea matricii si coordonatele (x, y) la care 
+se afla valoarea ce trebuie gasita. Aceasta apeleaza metoda search_val cu 
+parametrii x, y, (coordonatele date), 1, 1, (se pleaca din coltul din stanga
+sus), n (dimensiunea initiala) si val, care initial este 0.
+
+-> complexitate: O(n) 
+(impartire in 4 subprobleme => log4(2^n) = (1/2)*log2(2^n) = (1/2)*n => O(n))
+
+
+Problema 2 - Statistics:
+
+In cadrul metodei main se citeste inputul apeland metoda readInput, apoi 
+afiseaza solutia apeland writeOutput cu parametrul solutia generata in urma
+apelului metodei statistics. 
+
+Metoda readInput citeste din fisier numarul n, apoi citeste si intializeaza
+vectorul de cuvinte. 
+
+Metoda writeOutput scrie in fisier valoarea primita ca parametru.
+
+Metoda nrOcc calculeaza numarul de ocurente al caracterului dat in 
+cuvantul dat. 
+
+Metoda charDominance calculeaza "dominanta" caracterului dat in cuvantul 
+dat dupa formula: numar ocurente litera cautata - numar ocurente celelalte
+litere din cuvant. Aceasta metoda va fi folosita pentru a sorta cuvintele 
+in functie de aceasta dominanta.
+
+Metoda isDominant verifica daca litera data este dominanta in cuvantul dat,
+adica verifica daca numarul de ocurente al acestuia depaseste jumatate din 
+lungimea cuvantului.
+
+Metoda getChars intoarce intr-un Set toate literele (unice) din vectorul de 
+cuvinte, pentru a trece prin fiecare o singura data. 
+
+Metoda statistics calculeaza numarul maxim de cuvinte ce pot fi concatenate 
+astfel incat sa existe o litera dominanta astfel: se va calcula acest numar 
+maxim pentru fiecare litera (iterand prin Set-ul obtinut in urma metodei 
+getChars), rezultatul final fiind dat de maximul dintre aceste numere (maximul 
+dintre numerele calculate pentru fiecare litera). Pentru a obtine acest numar 
+maxim de cuvinte ce pot fi concatenate a fost implementata o abordare Greedy,
+sortand vectorul de cuvinte descrescator in functie de dominanta caracterului
+curent (din iteratia curenta), apoi adaugand aceste cuvinte la sirul format 
+pana cand caracterul curent nu mai este dominant in sir.
+
+-> complexitate: O(nlog(n))
+(
+- getChars: O(n)
+- pentru fiecare litera din caracter: O(nr litere in alfabetul englez = 26)
+- sortare cuvinte: Arrays.sort => O(nlog(n))
+- pentru fiecare cuvant: in cel mai rau caz se opreste la ultimul cuvant => O(n)
+)
+
+
+Problema 3 - Prinel:
+
+In cadrul metodei main se citeste inputul apeland metoda readInput, apoi 
+afiseaza solutia apeland writeOutput cu parametrul solutia generata in urma
+apelului metodei prinel. 
+
+Metoda readInput citeste din fisier n si k, apoi citeste si intializeaza
+vectorul target si vectorul p. 
+
+Metoda writeOutput scrie in fisier valoarea primita ca parametru.
+
+Metoda maxInArray intoarce maximul dintr-un vector.
+
+Metoda genDivisors genereaza toti divizorii unui numar astfel: Se doreste 
+o implementare cat mai eficienta, asadar nu se vor parcurge divizorii de la
+1 la numar (complexitate O(n)). In schimb, se observa ca se pot lua divizori 
+din ambele directii, simetric, fiind astfel necesar sa se mearga doar pana la 
+sqrt(numar), adaugand atat divizorul cat si numarul impartit la acest divizor.
+In acest fel se reduce complexitatea la O(sqrt(n)). 
+
+Metoda genNrOp calculeaza numarul minim de operatii, abordand o implementare
+de Programare Dinamica. Se intializeaza un vector de dimensiune egala cu 
+maximul din vectorul target + 1, deoarece se doreste reprezentarea acestui 
+vector astfel incat la indexul i se vor afla numarul minim de operatii de 
+la 1 la i. Intrucat se doreste minimul, se umple acest vector cu numarul 
+maxim de operatii posibile, adica valoarea maxima din target. Pentru fiecare 
+numar de la 1 la valoarea maxima din target se va trece prin divizorii sai 
+si se va retine in vector la indexul corespunzator numarului curent + 
+divizorul curent minimul dintre ce se afla inainte la acest index si 
+numarul de operatii de la numar (inainte de adaugarea divizorului curent) + 1
+(+ operatia curenta). In final se intoarce vectorul format din numarul de 
+operatii minime corespunzator vectorului target.
+
+Se observa faptul ca problema este aproape identica problemei rucsacului 
+discreta, astfel ca metoda genPoints va implementa aceasta problema, adaptata 
+pentru greutate = numar maxim operatii (k). Se doreste o implementare cat 
+mai eficienta, asadar, intrucat nu este necesara reconstituirea solutiei,
+matricea dp poate fi redusa la un vector, reducand astfel complexitatea 
+spatiala. 
+
+-> complexitate: O(max(target)) + O(nk)
+(
+- generare numar minim operatii: O(max(target)) * O(sqrt(max(target))) + O(n) 
+    = O(max(target))
+- problema rucsacului discreta: O(nk)
+)
+
+
+Referinte:
+
+- Solutii laboratoare:
+    - Laborator Divide et Impera: parcurgere Z
+    - Laborator Programare Dinamica: problema rucsacului discreta
+- Idee implementare mai eficienta obtinere divizori: GeeksForGeeks
+- Implementare mai eficienta a problemei rucsacului discreta: GeeksForGeeks
