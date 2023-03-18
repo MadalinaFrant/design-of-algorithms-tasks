@@ -1,12 +1,9 @@
-Tema 1 Proiectarea Algoritmilor - Frant Madalina 324CB
-
-
 Pentru fiecare problema se citeste inputul din fisierul corespunzator 
 folosind un BufferedReader, respectiv se afiseaza solutia generata utilizand
 un BufferedWriter.
 
 
-Problema 1 - Walsh:
+Walsh:
 
 In cadrul metodei main se citesc n si k de pe prima linie, apoi pentru 
 fiecare dintre coordonatele (x, y) date se genereaza solutia (apeland metoda
@@ -40,7 +37,7 @@ sus), n (dimensiunea initiala) si val, care initial este 0.
 (impartire in 4 subprobleme => log4(2^n) = (1/2)*log2(2^n) = (1/2)*n => O(n))
 
 
-Problema 2 - Statistics:
+Statistics:
 
 In cadrul metodei main se citeste inputul apeland metoda readInput, apoi 
 afiseaza solutia apeland writeOutput cu parametrul solutia generata in urma
@@ -85,7 +82,7 @@ pana cand caracterul curent nu mai este dominant in sir.
 )
 
 
-Problema 3 - Prinel:
+Prinel:
 
 In cadrul metodei main se citeste inputul apeland metoda readInput, apoi 
 afiseaza solutia apeland writeOutput cu parametrul solutia generata in urma
@@ -133,10 +130,198 @@ spatiala.
 )
 
 
+Fortificatii:
+
+In cadrul metodei main se citeste inputul apeland metoda readInput, apoi se
+afiseaza solutia apeland writeOutput cu parametrul solutia generata in urma
+apelului metodei fortificatii.
+
+Metoda readInput citeste din fisier N, M si K, apoi citeste B si nodurile 
+barbare, intializeaza lista de adiacenta pentru fiecare nod, apoi citeste 
+muchiile alaturi de costurile acestora, reprezentandu-le corespunzator in 
+lista de adiacenta a nodului corespunzator. Indexarea se va face de la 1.
+
+Metoda writeOutput scrie in fisier valoarea primita ca parametru.
+
+Intrucat problema implica calculul distantelor minime de la o sursa (capitala 
+1) catre toate celelalte noduri (mai specific catre nodurile barbare), a 
+fost preluata solutia prezentata in cadrul laboratorului de drumuri minime in 
+grafuri care aplica algoritmul Dijkstra.
+
+Se definesc, asemenea cum a fost prezentat in solutie, clasele: Pair - cu campurile
+destination (nodul destinatie) si cost (costul pana la destinatie), folosita in 
+reprezentarea elementelor din lista de adiacenta a unui nod si a elementelor cozii 
+de parcurs si DijkstraResult - cu campurile d si p reprezentand lista de distante 
+si lista de parinti, folosita pentru a stoca rezultatul in urma apelului metodei 
+dijkstra.
+
+Metoda dijkstra calculeaza distanta minima de la nodul capitala 1 catre 
+toate celelalte noduri. Se vor retine in vectorul de distante distantele 
+minime catre nodurile corespunzatoare si in vectorul de parinti parintii 
+nodurilor in urma parcurgerii drumului de distanta minima. Se intializeaza 
+distantele la valoarea maxima posibila intrucat se doreste gasirea distantei 
+minime si parintii cu 0 (initial fara parinte), se intializeaza coada cu ajutorul 
+careia se vor parcurge nodurile (cu elemente de tip Pair), si se adauga nodul de 
+plecare (1) in coada, cu costul 0, actualizand si in vectorul de distante. 
+Cat timp mai exista elemente in coada, se extrage capul cozii (nodul cu cea mai 
+mare prioritate) si se verifica daca costul nodului curent (extras) este mai mare 
+decat costul salvat in vectorul de distante, caz in care se sare peste acesta 
+deoarece se doreste costul cat mai mic. Altfel, se parcurg toti vecinii nodului 
+verificand daca noua distanta pana la nod este mai mica decat cea salvata, in acest 
+caz actualizand in vectorul de distante si in cel de parinti si adaugand nodul 
+in coada. 
+
+Metoda getNodeWithDest cauta in vecinii nodului node dat ca parametru nodul 
+cu destinatia dest data, intorcand-ul in cazul in care acesta exista, altfel 
+intorcand null.
+
+Metoda getBarbarsMinCostNode intoarce nodul barbar cu distanta minima pana 
+la nodul capitala 1. 
+
+Metoda addFortification adauga o fortificatie (incrementeaza costul muchiei)
+pe muchia cu cel mai mic cost pana la nodul capitala 1 de la un nod barbar,
+obtinand nodul barbar cu cost minim in urma apelului metodei getBarbarsMinCostNode
+si obtinand muchia dinspre nodul astfel returnat catre parintele acestuia si 
+muchia inversa (intrucat graful este neorientat) prin metoda getNodeWithDest
+si adaugand 1 la acestea. 
+
+Metoda fortificatii adauga cele K fortificatii astfel incat sa se obtina 
+distanta minima de la un barbar catre capitala cat mai mare astfel: pentru 
+cele K fortificatii adauga o fortificatie pe muchia cu cel mai mic cost 
+pana la nodul capitala 1 de la un nod barbar, apeland metoda addFortification
+dupa ce se realizeaza vectorul de distante si de parinti in urma apelului 
+metodei dijkstra. Dupa ce s-au adaugat toate cele K fortificatii se mai 
+apeleaza o data functia dijkstra pentru a genera distantele minime si 
+se intoarce costul minim al unei rute de la un barbar la capitala. 
+
+-> complexitate: O(K) * O(M * log(N))
+( 
+- complexitate Dijkstra: O(m * log(n)) unde m = nr. muchii si n = nr. noduri 
+    m = M
+    n = N 
+    => O(M * log(N))
+- complexitate fortificatii: O(K) * O(M * log(N))
+)
+
+
+Beamdrone:
+
+In cadrul metodei main se citeste inputul apeland metoda readInput, apoi se
+afiseaza solutia apeland writeOutput cu parametrul solutia generata in urma
+apelului metodei beamdrone. 
+
+Metoda readInput citeste din fisier N si M, intializeaza matricea reprezentand 
+pista de dimensiuni (N + 1) x (M + 1) (se va folosi indexarea de la 1), apoi 
+citeste coordonatele initale si ale destinatiei si apoi citeste si intializeaza
+matricea pistei. 
+
+Metoda writeOutput scrie in fisier valoarea primita ca parametru.
+
+Problema este asemanatoare algoritmului Dijkstra pentru gasirea costului minim 
+al unui drum de la o sursa la toate celelalte noduri prezentat in cadrul 
+laboratorului de drumuri minime in grafuri, deci rezolvarea acesteia va avea 
+la baza solutia prezentata, cu precizarea ca costul nu este dat, ci va fi 
+generat la fiecare miscare. 
+
+Se definesc clasele: Node - reprezinta un nod dat de coordonatele x si y,
+si QueueNode - reprezinta un nod in coada utilizata pentru parcurgerea 
+nodurilor: contine campul node (nodul in sine), campul prevDir (directia 
+pe care s-a intrat in acest nod) si campul cost (costul pana la nod); este 
+implementata metoda compareTo pentru ca nodurile sa fie adaugate in coada 
+in functie de cost. 
+
+Metoda isInTrack verifica daca nodul dat ca parametru reprezinta un nod 
+valid in matricea pistei, adica nu depaseste dimensiunile (nu iese din pista)
+si nu este un perete. 
+
+Metoda genCost calculeaza costul miscarii in functie de directia precedenta si 
+cea curenta. Daca de pe o directie verticala (in jos sau in sus) se trece la o
+directie orizontala (spre stanga sau spre dreapta), sau invers, costul va fi 1,
+iar daca se pastreaza directia verticala/orizontala costul va fi 0. 
+
+Metoda dirToInt primeste o directie (un Node) si genereaza un int pentru a 
+putea reprezenta un indice, folosit in matricea de costuri pentru a retine 
+directia pe care s-a intrat in nod. Astfel, directiile spre stanga si spre 
+dreapta (orizontala) vor genera indicele 0, respectiv in jos si in sus 
+(verticala) vor genera indicele 1. Desi sunt 4 directii posibile, nu este 
+nevoie de 4 indici reprezentand directia pe care s-a intrat in nod, intrucat 
+costul este influentat doar de pastrarea/schimbarea directiei orizontale/
+verticale. 
+
+Metoda beamdrone calculeaza costul minim pana la nodul destinatie astfel:
+se va retine in matricea costurilor (tridimensonala) costul minim pana la 
+nodul reprezentat de coordonatele x, y, intrand in acesta pe directie 
+orizontala (indicele 0) sau verticala (indicele 1). Se intializeaza costurile
+la valoarea maxima posibila intrucat se doreste gasirea costului minim, se 
+intializeaza coada cu ajutorul careia se vor parcurge nodurile (cu elemente 
+de tip QueueNode), si se adauga nodul de plecare in coada, cu costul 0, 
+intrand in acesta de pe toate cele 4 directii, actualizand si matricea de 
+costuri pentru acesta. Cat timp mai exista elemente in coada, se extrage 
+capul cozii (nodul cu cea mai mare prioritate); daca nodul extras este 
+cel destinatie, atunci este returnat costul pana la acesta. Altfel, se 
+verifica daca costul nodului curent (extras) este mai mare decat costul 
+salvat in matricea de costuri, caz in care se sare peste acesta deoarece 
+se doreste costul cat mai mic. In cazul unui cost mai mic sau egal se 
+genereaza un nou nod mergand pe fiecare din cele 4 directii. Daca nodul 
+creat este un nod valid in pista, se calculeaza costul miscarii si se 
+verifica daca noul cost pana la nod devine mai mic decat cel salvat, caz 
+in care se adauga nodul in coada si se actualizeaza intrarea corespunzatoare
+din matricea de costuri. 
+
+-> complexitate: O(m * log(n)) unde m = nr. muchii si n = nr. noduri 
+(complexitate Dijkstra: O(<nr. muchii> * log(<nr. noduri>)))
+
+
+Curse: 
+
+In cadrul metodei main se citeste inputul apeland metoda readInput, apoi se
+afiseaza solutia apeland writeOutput cu parametrul solutia generata in urma
+apelului metodei curse. 
+
+Metoda readInput citeste din fisier N, M si A, intializeaza lista de adiacenta 
+pentru fiecare nod, apoi citeste si initializeaza matricea reprezentand 
+antrenamentele de dimensiuni (A + 1) x (N + 1). Indexarea se va face de la 1.
+
+Metoda writeOutput scrie in fisier valoarea primita ca parametru.
+
+Pentru a gasi relatiile intre masini, intrucat antrenamentele sunt ordonate 
+dupa timpul de finish de pe fiecare pista si dupa prioritatea pistelor, se 
+parcurg antrenamentele 2 cate 2, comparand masinile incepand cu prima pista. 
+In caz de egalitate nu se poate deduce o relatie de ordine intre cele 2 masini
+(aceeasi masina pe aceeasi pista), asa ca se trece la urmatoarea pista. Altfel, 
+se poate deduce ca masina din cadrul primului antrenament este mai rapida decat 
+cea din antrenamentul al doilea. Asadar, se parcurg coloanele (pistele) pana 
+la gasirea primei inegalitati. 
+
+Odata gasite relatiile intre masini, pentru a realiza ordinea performantelor 
+masinilor se considera o relatie intre 2 masini "x > y" ca fiind o muchie de la 
+x la y, apoi se realizeaza o sortare topologica pe graful astfel generat.
+
+Metoda curse apeleaza mai intai metoda genGraph pentru a genera graful cu 
+relatiile de ordine corespunzatoare, apoi realizeaza sortarea topologica 
+apeland metoda genTopsort.
+
+Metoda genTopsort, care se foloseste de metoda dfs, pentru a realiza 
+sortarea topologica, a fost preluata din solutia laboratorului 7 de 
+parcurgere a grafurilor.
+
+-> complexitate: O(A * N) + O(M + A)
+(
+- complexitate generare graf: O(A * N)
+- complexitate sortare topologica: O(n + m) unde m = nr. muchii si n = nr. noduri 
+    n = M (masini)
+    m = A - 1 (nr. maxim relatii gasite (antrenamente parcurse 2 cate 2))
+    => O(M + A)
+)
+
+
 Referinte:
 
 - Solutii laboratoare:
     - Laborator Divide et Impera: parcurgere Z
     - Laborator Programare Dinamica: problema rucsacului discreta
+    - Laborator 7 (parcurgerea grafurilor): sortare topologica (DFS)
+    - Laborator 9 (drumuri minime in grafuri): Dijkstra - gasirea 
+costului minim al unui drum de la o sursa la toate celelalte noduri 
 - Idee implementare mai eficienta obtinere divizori: GeeksForGeeks
 - Implementare mai eficienta a problemei rucsacului discreta: GeeksForGeeks
